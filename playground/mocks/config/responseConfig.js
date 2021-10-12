@@ -14,7 +14,7 @@ const idx = {
   ],
 
   '/idp/idx/introspect': [
-    // 'identify',
+    'identify',
     // 'error-401-invalid-otp-passcode',
     // 'error-with-failure-redirect',
     // 'error-feature-not-enabled',
@@ -69,7 +69,7 @@ const idx = {
     // 'identify-with-third-party-idps',
     // 'identify-with-only-third-party-idps',
     // 'identify-with-only-one-third-party-idp',
-    'identify-with-password',
+    // 'identify-with-password',
     // 'identify-with-universal-link',
     // 'identify-with-app-link',
     // 'success',
@@ -163,7 +163,7 @@ const idx = {
     'identify',
   ],
   '/idp/idx/recover': [
-    // 'error-forgot-password',
+    'error-forgot-password',
     'authenticator-reset-password'
   ],
   '/idp/idx/activate': [
