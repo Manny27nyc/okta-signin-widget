@@ -82,6 +82,8 @@ export default Router.extend({
     // Hide until unitial render
     this.hide();
 
+    this.isFirstRender = true;
+
     configIdxJsClient(this.appState);
     this.listenTo(this.appState, 'updateAppState', this.handleUpdateAppState);
     this.listenTo(this.appState, 'remediationError', this.handleIdxResponseFailure);
@@ -94,8 +96,7 @@ export default Router.extend({
     if (this.hasAuthenticationSucceeded(idxResponse) 
       && this.settings.get('features.rememberMyUsernameOnOIE')) {
       this.updateIdentifierCookie(idxResponse);
-    }    
-
+    }
     if (idxResponse.interactionCode) {
       // Although session.stateHandle isn't used by interation flow,
       // it's better to clean up at the end of the flow.
@@ -198,7 +199,65 @@ export default Router.extend({
     // }
   },
 
-  /* eslint max-statements: [2, 22] */
+  async handleInitialView(originalIdxResp) {
+    // ensure no current state/idx flow exists
+    // TODO:
+    // const idxResponse = await originalIdxResp.actions.cancel();
+    const idxResponse = originalIdxResp;
+
+    const initialView = this.settings.get('initialView');
+    if (initialView === 'identify') {
+      // TODO: revisit, based on assumption `identify` is the top-most remediation. Confirm this?
+      // return idxResponse.proceed('identify');
+    }
+    else if (initialView === 'register') {
+      return await idxResponse.proceed('select-enroll-profile');
+    }
+    else if (initialView === 'reset-password') {
+      // TODO: handle when not available action
+      if (idxResponse.actions['currentAuthenticator-recover']) {
+        return idxResponse.actions['currentAuthenticator-recover']();
+      }
+    }
+    else if (initialView === 'unlock') {
+      // requires: introspect -> identify-recovery -> select-authenticator-unlock-account
+      return await idxResponse.proceed('identify-recovery');
+    }
+    else {
+      Logger.warn(`Unknown \`initialView\` value: ${initialView}`);
+    }
+
+    // default to original idx response
+    return idxResponse;
+  },
+
+  async handleOieRender() {
+    const originalResp = await startLoginFlow(this.settings);
+    let idxResp = originalResp;
+
+    try {
+      if (this.isFirstRender && this.settings.get('initialView')) {
+        this.isFirstRender = false;
+        idxResp = await this.handleInitialView(originalResp);
+      }
+
+      this.appState.trigger('updateAppState', idxResp);
+    }
+    catch (err) {
+      // catches and handles `Unknown remediation` errors thrown by this.handleInitialView (and okta-idx-js)
+      if (typeof err === 'string' && err.startsWith('Unknown remediation choice')) {
+        Logger.warn(`initialView [${this.settings.get('initialView')}] not valid with current Org configurations`);
+        this.appState.trigger('updateAppState', originalResp);
+        this.appState.set('messages', {value: [{message: 'Please contact Jeff'}]});
+      }
+      else {
+        // do not catch unknown errors here
+        throw err;
+      }
+    }
+  },
+
+  /* eslint max-statements: [2, 30] */
   render: async function(Controller, options = {}) {
     // If url changes then widget assumes that user's intention was to initiate a new login flow,
     // so clear stored token to use the latest token.
@@ -223,8 +282,7 @@ export default Router.extend({
     // state token (which will be set into AppState)
     if (this.settings.get('oieEnabled')) {
       try {
-        const idxResp = await startLoginFlow(this.settings);
-        this.appState.trigger('updateAppState', idxResp);
+        await this.handleOieRender();
       } catch (errorResp) {
         this.appState.trigger('remediationError', errorResp.error || errorResp);
       } finally {
