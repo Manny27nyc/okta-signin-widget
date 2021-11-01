@@ -14,10 +14,8 @@ import Errors from 'util/Errors';
 import Logger from 'util/Logger';
 import { interact } from './interact';
 import { introspect } from './introspect';
-import { getTransactionMeta, saveTransactionMeta, clearTransactionMeta } from './transactionMeta';
 import sessionStorageHelper from './sessionStorageHelper';
 import idx from '@okta/okta-idx-js';
-import { request } from '@okta/okta-idx-js/src/client';
 import { 
   getTransactionMeta,
   saveTransactionMeta, 
@@ -33,11 +31,6 @@ const handleProxyIdxResponse = async (settings) => {
   });
 };
 
-<<<<<<< HEAD
-=======
-// const recover = 
-
->>>>>>> 40efdc40e861bba7af2a2ada9406f5b66480f2d6
 async function startSpecificIdxFlow (originalIdxResp, flow='') {
   console.log('trying to start flow: ', originalIdxResp, flow);
   let idxResponse = originalIdxResp;
@@ -84,7 +77,6 @@ async function startSpecificIdxFlow (originalIdxResp, flow='') {
   }
 }
 
-<<<<<<< HEAD
 async function continueIdxFlow(settings) {
   // TODO: remove
   // return startIdxFlow(settings);
@@ -122,8 +114,6 @@ async function continueIdxFlow(settings) {
   return idx.makeIdxState(meta.lastRawIdx);
 }
 
-=======
->>>>>>> 40efdc40e861bba7af2a2ada9406f5b66480f2d6
 async function startIdxFlow(settings) {
   // Return a preset response
   if (settings.get('proxyIdxResponse')) {
