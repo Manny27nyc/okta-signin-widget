@@ -18,6 +18,7 @@ const FLOW_CONTINUE_IN_NEW_TAB = 'idx.transferred.to.new.tab';
 const EMAIL_LINK_OUT_OF_DATE = 'idx.return.stale';
 const EMAIL_LINK_CANT_BE_PROCESSED = 'idx.return.error';
 const EMAIL_VERIFICATION_REQUIRED = 'idx.email.verification.required';
+const OV_UV_ENABLE_BIOMETRIC_FASTPASS = 'oie.authenticator.oktaverify.method.fastpass.verify.enable.biometrics';
 
 const EMAIL_ACTIVATION_EMAIL_EXPIRE = 'idx.expired.activation.token';
 const EMAIL_ACTIVATION_EMAIL_INVALID = 'idx.missing.activation.token';
@@ -110,9 +111,27 @@ const Body = BaseForm.extend({
     }
   },
 
+  showOVEnableBiometricError() {
+    const options = {
+      type: 'error',
+      className: 'okta-verify-uv-callout-content',
+      title: loc('oie.authenticator.app.method.push.verify.enable.biometrics.title', 'login'),
+      subtitle: loc('oie.authenticator.app.method.push.verify.enable.biometrics.description', 'login'),
+      bullets: [
+        loc('oie.authenticator.app.method.push.verify.enable.biometrics.point1', 'login'),
+        loc('oie.authenticator.app.method.push.verify.enable.biometrics.point2', 'login'),
+        loc('oie.authenticator.app.method.push.verify.enable.biometrics.point3', 'login')
+      ],
+    };
+    this.add(createCallout(options), {
+      selector: '.o-form-error-container',
+      prepend: true,
+    });
+  },
+
   showMessages() {
     const messagesObjs = this.options.appState.get('messages');
-    let description;
+    let description, options;
     if (this.options.appState.containsMessageWithI18nKey(OPERATION_CANCELED_ON_OTHER_DEVICE_KEY)) {
       description = loc('idx.operation.cancelled.on.other.device', 'login');
       messagesObjs.value.push({ message: loc('oie.consent.enduser.deny.description', 'login') });
@@ -121,7 +140,7 @@ const Body = BaseForm.extend({
       messagesObjs.value.push({ message: loc('oie.return.to.original.tab', 'login')});
     } else if (this.options.appState.containsMessageWithI18nKey('tooManyRequests')) {
       description = loc('oie.tooManyRequests', 'login');
-    }
+    } 
 
     if (description && Array.isArray(messagesObjs?.value)) {
       messagesObjs.value[0].message = description;
@@ -133,7 +152,9 @@ const Body = BaseForm.extend({
       messagesObjs.value
         .forEach(messagesObj => {
           const msg = messagesObj.message;
-          if (messagesObj.class === 'ERROR' || messagesObj.i18n?.key === RETURN_LINK_EXPIRED_KEY) {
+          if (messagesObj.i18n?.key === OV_UV_ENABLE_BIOMETRIC_FASTPASS) {
+            this.showOVEnableBiometricError();
+          } else if (messagesObj.class === 'ERROR' || messagesObj.i18n?.key === RETURN_LINK_EXPIRED_KEY) {
             this.add(createCallout({
               content: msg,
               type: 'error',
@@ -147,7 +168,6 @@ const Body = BaseForm.extend({
         });
     }
   },
-
 });
 
 const Footer = BaseFooter.extend({

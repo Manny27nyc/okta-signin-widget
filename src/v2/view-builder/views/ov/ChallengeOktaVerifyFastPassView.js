@@ -1,9 +1,11 @@
-import { $ } from 'okta';
-import { BaseFormWithPolling } from '../../internals';
+import { $, loc, createCallout } from 'okta';
+import { BaseFormWithPolling, BaseForm } from '../../internals';
 import Logger from '../../../../util/Logger';
 import { CHALLENGE_TIMEOUT } from '../../utils/Constants';
 import BrowserFeatures from '../../../../util/BrowserFeatures';
 import {doChallenge} from '../../utils/ChallengeViewUtil';
+
+const OV_UV_ENABLE_BIOMETRIC_FASTPASS = 'oie.authenticator.oktaverify.method.fastpass.verify.enable.biometrics';
 
 const request = (opts) => {
   const ajaxOptions = Object.assign({
@@ -122,6 +124,31 @@ const Body = BaseFormWithPolling.extend(Object.assign(
       this.ulDom = this.add(`
         <iframe src="${this.customURI}" id="custom-uri-container" style="display:none;"></iframe>
       `).last();
+    },
+
+    isErrorCalloutCustomized(convertedErrors) {
+      const errorSummaryKeys = convertedErrors?.responseJSON?.errorSummaryKeys;
+      if (errorSummaryKeys && errorSummaryKeys.includes(OV_UV_ENABLE_BIOMETRIC_FASTPASS)) {
+        return true;
+      }
+      return false;
+    },
+
+    showCustomErrorCallout() {
+      BaseForm.prototype.showCustomErrorCallout.apply(this, arguments);
+      this.add('<div class="ion-messages-container"></div>', '.o-form-error-container');
+      const options = {
+        type: 'error',
+        className: 'okta-verify-uv-callout-content',
+        title: loc('oie.authenticator.app.method.push.verify.enable.biometrics.title', 'login'),
+        subtitle: loc('oie.authenticator.app.method.push.verify.enable.biometrics.description', 'login'),
+        bullets: [
+          loc('oie.authenticator.app.method.push.verify.enable.biometrics.point1', 'login'),
+          loc('oie.authenticator.app.method.push.verify.enable.biometrics.point2', 'login'),
+          loc('oie.authenticator.app.method.push.verify.enable.biometrics.point3', 'login')
+        ],
+      };
+      this.add(createCallout(options), '.o-form-error-container');
     },
   },
 ));

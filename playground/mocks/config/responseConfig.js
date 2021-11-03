@@ -14,7 +14,7 @@ const idx = {
   ],
 
   '/idp/idx/introspect': [
-    'identify',
+    // 'identify',
     // 'error-401-invalid-otp-passcode',
     // 'error-with-failure-redirect',
     // 'error-feature-not-enabled',
@@ -47,6 +47,7 @@ const idx = {
     // 'authenticator-verification-security-question',
     // 'authenticator-verification-select-authenticator',
     // 'authenticator-verification-select-authenticator-ov-m2',
+    //'authenticator-verification-select-authenticator-ov-m2 copy',
     // 'authenticator-verification-webauthn',
     // 'authenticator-reset-password',
     // 'authenticator-expired-password',
@@ -393,10 +394,12 @@ const userVerificationLoopback = {
     'authenticator-verification-okta-verify-signed-nonce-loopback'
   ],
   '/idp/idx/authenticators/poll': [
-    'authenticator-verification-okta-verify-signed-nonce-loopback',
-    'authenticator-verification-okta-verify-signed-nonce-loopback',
-    'authenticator-verification-okta-verify-signed-nonce-loopback',
-    'success',
+    //'authenticator-verification-okta-verify-signed-nonce-loopback',
+    //'authenticator-verification-okta-verify-signed-nonce-loopback',
+    //'authenticator-verification-okta-verify-signed-nonce-loopback',
+    //'error-okta-verify-uv-totp-verify-enable-biometrics',
+    'authenticator-verification-select-authenticator-ov-m2 copy',
+    // 'success',
   ],
 };
 
@@ -844,5 +847,5 @@ const selfServiceRegistration = {
 };
 
 module.exports = {
-  mocks: idx,
+  mocks: userVerificationLoopback,
 };
