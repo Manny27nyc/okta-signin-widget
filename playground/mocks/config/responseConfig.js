@@ -47,7 +47,6 @@ const idx = {
     // 'authenticator-verification-security-question',
     // 'authenticator-verification-select-authenticator',
     // 'authenticator-verification-select-authenticator-ov-m2',
-    //'authenticator-verification-select-authenticator-ov-m2 copy',
     // 'authenticator-verification-webauthn',
     // 'authenticator-reset-password',
     // 'authenticator-expired-password',
@@ -394,12 +393,21 @@ const userVerificationLoopback = {
     'authenticator-verification-okta-verify-signed-nonce-loopback'
   ],
   '/idp/idx/authenticators/poll': [
+    'authenticator-verification-okta-verify-signed-nonce-loopback',
+    'authenticator-verification-okta-verify-signed-nonce-loopback',
+    'authenticator-verification-okta-verify-signed-nonce-loopback',
+    'success',
+  ],
+};
+
+// user verification: Windows/Android authenticator with loopback server
+const userVerificationLoopbackError = {
+  '/idp/idx/introspect': [
+    'authenticator-verification-okta-verify-signed-nonce-loopback'
+  ],
+  '/idp/idx/authenticators/poll': [
     //'authenticator-verification-okta-verify-signed-nonce-loopback',
-    //'authenticator-verification-okta-verify-signed-nonce-loopback',
-    //'authenticator-verification-okta-verify-signed-nonce-loopback',
-    //'error-okta-verify-uv-totp-verify-enable-biometrics',
-    'authenticator-verification-select-authenticator-ov-m2 copy',
-    // 'success',
+    'error-okta-verify-uv-fastpass-verify-enable-biometrics',
   ],
 };
 
@@ -847,5 +855,5 @@ const selfServiceRegistration = {
 };
 
 module.exports = {
-  mocks: userVerificationLoopback,
+  mocks: userVerificationLoopbackError,
 };

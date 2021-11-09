@@ -117,11 +117,6 @@ const Body = BaseForm.extend({
       className: 'okta-verify-uv-callout-content',
       title: loc('oie.authenticator.app.method.push.verify.enable.biometrics.title', 'login'),
       subtitle: loc('oie.authenticator.app.method.push.verify.enable.biometrics.description', 'login'),
-      bullets: [
-        loc('oie.authenticator.app.method.push.verify.enable.biometrics.point1', 'login'),
-        loc('oie.authenticator.app.method.push.verify.enable.biometrics.point2', 'login'),
-        loc('oie.authenticator.app.method.push.verify.enable.biometrics.point3', 'login')
-      ],
     };
     this.add(createCallout(options), {
       selector: '.o-form-error-container',
@@ -131,7 +126,7 @@ const Body = BaseForm.extend({
 
   showMessages() {
     const messagesObjs = this.options.appState.get('messages');
-    let description, options;
+    let description;
     if (this.options.appState.containsMessageWithI18nKey(OPERATION_CANCELED_ON_OTHER_DEVICE_KEY)) {
       description = loc('idx.operation.cancelled.on.other.device', 'login');
       messagesObjs.value.push({ message: loc('oie.consent.enduser.deny.description', 'login') });
@@ -140,7 +135,7 @@ const Body = BaseForm.extend({
       messagesObjs.value.push({ message: loc('oie.return.to.original.tab', 'login')});
     } else if (this.options.appState.containsMessageWithI18nKey('tooManyRequests')) {
       description = loc('oie.tooManyRequests', 'login');
-    } 
+    }
 
     if (description && Array.isArray(messagesObjs?.value)) {
       messagesObjs.value[0].message = description;
@@ -168,6 +163,7 @@ const Body = BaseForm.extend({
         });
     }
   },
+
 });
 
 const Footer = BaseFooter.extend({
