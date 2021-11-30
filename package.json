@@ -161,8 +161,8 @@
     "webpack-dev-server": "^4.0.0"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.10.1",
-    "@babel/runtime": "^7.10.3",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/runtime": "^7.16.0",
     "cross-fetch": "^3.0.4",
     "handlebars": "^4.5.3",
     "q": "1.4.1",
