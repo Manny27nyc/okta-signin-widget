@@ -164,7 +164,7 @@
     "@babel/polyfill": "^7.10.1",
     "@babel/runtime": "^7.10.3",
     "cross-fetch": "^3.0.4",
-    "handlebars": "^4.5.3",
+    "handlebars": "^4.7.8",
     "q": "1.4.1",
     "u2f-api-polyfill": "0.4.3",
     "underscore": "1.13.1"
